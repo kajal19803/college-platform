@@ -1,65 +1,195 @@
-import Image from "next/image";
+import CollegeCard from "@/components/CollegeCard";
 
-export default function Home() {
+import SearchBar from "@/components/SearchBar";
+
+async function getColleges(
+  search: string,
+  location: string,
+  rating: string,
+  fees: string
+) {
+
+  const res = await fetch(
+    `http://localhost:3000/api/colleges?search=${search}&location=${location}&rating=${rating}&fees=${fees}`,
+    {
+      cache: "no-store",
+    }
+  );
+
+  return res.json();
+}
+
+export default async function Home({
+  searchParams,
+}: {
+  searchParams: Promise<{
+    search?: string;
+    location?: string;
+    rating?: string;
+    fees?: string;
+  }>;
+}) {
+
+  const params =
+    await searchParams;
+
+  const search =
+    params.search || "";
+
+  const location =
+    params.location || "";
+
+  const rating =
+    params.rating || "";
+
+  const fees =
+    params.fees || "";
+
+  const response =
+    await getColleges(
+      search,
+      location,
+      rating,
+      fees
+    );
+
+  const colleges =
+    response.data;
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
+    <main className="min-h-screen bg-[#F9FAFB]">
+
+      {/* HERO */}
+      <section className="relative h-[420px] overflow-hidden border-b">
+
+        {/* BACKGROUND */}
+        <div
+          className="absolute inset-0 bg-cover bg-center"
+          style={{
+            backgroundImage:
+              "url('https://images.unsplash.com/photo-1562774053-701939374585?q=80&w=1600&auto=format&fit=crop')",
+          }}
         />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+
+        {/* OVERLAY */}
+        <div className="absolute inset-0 bg-[#111827]/75" />
+
+        {/* CONTENT */}
+        <div className="relative z-10 h-full flex items-center">
+
+          <div className="max-w-6xl mx-auto px-6 w-full">
+
+            <div className="max-w-3xl">
+
+              <p className="text-[#B7D432] text-sm font-semibold tracking-[0.2em] uppercase mb-4">
+                Discover Top Colleges
+              </p>
+
+              <h1 className="text-4xl md:text-5xl font-bold text-white leading-tight mb-5">
+
+                Find & Compare
+                Colleges Across India
+              </h1>
+
+              <p className="text-gray-300 text-lg leading-8 max-w-2xl mb-8">
+
+                Explore colleges,
+                compare fees,
+                placements,
+                rankings and find
+                the right college
+                for your future.
+              </p>
+
+              
+
+              {/* TAGS */}
+              <div className="flex flex-wrap gap-3 mt-6">
+
+                {[
+                  "Engineering",
+                  "MBA",
+                  "Medical",
+                  "Law",
+                  "BCA",
+                  "Design",
+                ].map((item) => (
+
+                  <button
+                    key={item}
+                    className="bg-white/10 border border-white/20 text-white text-sm px-4 py-2 rounded-md hover:bg-white hover:text-black transition"
+                  >
+                    {item}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+      </section>
+
+      {/* COLLEGES */}
+      <section className="max-w-6xl mx-auto px-6 py-12">
+
+        {/* HEADER */}
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-5 mb-8">
+
+          <div>
+
+            <h2 className="text-3xl font-bold text-[#2F3B52]">
+
+              {search
+                ? `Search Results for "${search}"`
+                : "Top Colleges"}
+            </h2>
+
+            <p className="text-gray-500 mt-2">
+              Explore highly rated colleges across India
+            </p>
+          </div>
+
+          <div className="bg-white border rounded-lg px-5 py-3 min-w-[180px]">
+
+            <p className="text-sm text-gray-500">
+              Total Colleges
+            </p>
+
+            <h3 className="text-2xl font-bold text-[#2F3B52]">
+              {colleges.length}
+            </h3>
+          </div>
         </div>
-      </main>
-    </div>
+
+        {/* EMPTY STATE */}
+        {colleges.length === 0 ? (
+
+          <div className="bg-white border rounded-lg p-12 text-center">
+
+            <h3 className="text-2xl font-bold text-[#2F3B52] mb-3">
+              No Colleges Found
+            </h3>
+
+            <p className="text-gray-500">
+              Try searching with another keyword.
+            </p>
+          </div>
+
+        ) : (
+
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+
+            {colleges.map(
+              (college: any) => (
+
+                <CollegeCard
+                  key={college.id}
+                  college={college}
+                />
+              )
+            )}
+          </div>
+        )}
+      </section>
+    </main>
   );
 }

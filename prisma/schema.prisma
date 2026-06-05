@@ -1,0 +1,146 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+
+  id        String   @id @default(cuid())
+
+  name      String
+
+  email     String   @unique
+
+  password  String
+
+  createdAt DateTime @default(now())
+
+  savedColleges SavedCollege[]
+
+  reviews        Review[]
+}
+
+model College {
+
+  id                String   @id @default(cuid())
+
+  name              String
+
+  location          String
+
+  fees              Int
+
+  rating            Float
+
+  description       String
+
+  image             String?
+
+  coursesOffered    Int?
+
+  placementRating   Float?
+
+  examsAccepted     String?
+
+  nirfRanking       String?
+
+  collegeType       String?
+
+  campusSize        String?
+
+  totalStudents     Int?
+
+  totalFaculty      Int?
+
+  establishedYear   Int?
+
+  facilities        String?
+
+  courses           String?
+
+  createdAt         DateTime @default(now())
+
+  savedBy           SavedCollege[]
+
+  reviews           Review[]
+
+  cutoffs           Cutoff[]
+}
+
+model Cutoff {
+
+  id            String   @id @default(cuid())
+
+  year          Int
+
+  exam          String
+
+  course        String
+
+  category      String
+
+  openingRank   Int?
+
+  closingRank   Int
+
+  round         Int?
+
+  collegeId     String
+
+  createdAt     DateTime @default(now())
+
+  college       College @relation(fields: [collegeId], references: [id], onDelete: Cascade)
+}
+
+
+model Review {
+
+  id                String   @id @default(cuid())
+
+  studentName       String
+
+  studentEmail      String?
+
+  rating            Float
+
+  title             String
+
+  message           String
+
+  course            String?
+
+  graduationYear    String?
+
+  createdAt         DateTime @default(now())
+
+  collegeId         String
+
+  userId            String?
+
+  college           College  @relation(fields: [collegeId], references: [id], onDelete: Cascade)
+
+  user              User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model SavedCollege {
+
+  id        String   @id @default(cuid())
+
+  userId    String
+
+  collegeId String
+
+  createdAt DateTime @default(now())
+
+  user      User     @relation(fields: [userId], references: [id])
+
+  college   College  @relation(fields: [collegeId], references: [id])
+
+  @@unique([userId, collegeId])
+}
+
+
