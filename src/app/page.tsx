@@ -10,7 +10,7 @@ async function getColleges(
 ) {
 
   const res = await fetch(
-    `http://localhost:3000/api/colleges?search=${search}&location=${location}&rating=${rating}&fees=${fees}`,
+    `${process.env.NEXTAUTH_URL}/api/colleges?search=${search}&location=${location}&rating=${rating}&fees=${fees}`,
     {
       cache: "no-store",
     }
